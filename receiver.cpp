@@ -1,17 +1,25 @@
+#include "CNamedPipeIPC.h"
+
 #include <windows.h>
 
 #include <iostream>
 
-#include "data.h"
+#include "commData.h"
+
 int main(int argc, char* argv[]) {
 	// TODO: Get initData from arguments
-	Sleep(1000);
-	HANDLE hPipe = CreateFile(TEXT("\\\\.\\pipe\\MyPipe"), GENERIC_READ | GENERIC_WRITE,
-		0, NULL, OPEN_EXISTING, 0, NULL);
-	if (hPipe == INVALID_HANDLE_VALUE) {
+
+	HANDLE hPipe;
+
+	do {
+		hPipe = CreateFile(TEXT("\\\\.\\pipe\\MyPipe"), GENERIC_READ | GENERIC_WRITE,
+			0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
+	} while (hPipe == INVALID_HANDLE_VALUE);
+
+	/*if (hPipe == INVALID_HANDLE_VALUE) {
 		std::cerr << "CreateFile failed" << std::endl;
 		return -1;
-	}
+	}*/
 
 	InitialData initData;
 	DWORD bytesRead;
