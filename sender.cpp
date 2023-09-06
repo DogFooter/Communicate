@@ -1,19 +1,23 @@
-#include "CNamedPipeIPC.h"
+#include "NamedPipeIPC_Sender.h"
 
 
 
 int main() {
 
-    InitialData initData = { 1, 2, 3, "Hello" };
-    CNamedPipeIPC Sender;
+    NamedPipeIPC_Sender Sender;
 
     Sender.CreateNamedPipeDefault();
-    Sender.Connection();;
+    Sender.Connection();
+    std::cout << "Connected !" << std::endl;
 
-    std::cout << "Waiting for client" << std::endl;
+
+    InitialData initData = { 1, 2, 3, "Hello" };
+    Sender.WriteToPipe(initData);
+
 
     ProgressData data;
     while (!Sender.ReadToPipe(data));
+
 
     ResultData resData;
     if (!Sender.ReadToPipe(resData)) {
@@ -21,5 +25,4 @@ int main() {
     }
 
     return 0;
-
 }

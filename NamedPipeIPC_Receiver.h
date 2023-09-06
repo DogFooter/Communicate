@@ -16,8 +16,7 @@ public:
 
     int CreateNamedPipeDefault(std::string_view s = "\\\\.\\pipe\\MyPipe") override;
 
-    int Connection() override;
-
+    int Connection() override {};
 
 };
 #endif // !NAMEDPIPEIPC_RECEIVE_H
