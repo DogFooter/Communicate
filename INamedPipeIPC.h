@@ -18,14 +18,12 @@ public:
     virtual int CreateNamedPipeDefault(std::string_view s) = 0;
     virtual int Connection() = 0;
 
+    template<typename T>
+    virtual DWORD WriteToPipe(T& data);
 
-    virtual DWORD WriteToPipe(ProgressData& data);
-    virtual DWORD WriteToPipe(InitialData& data);
-    virtual DWORD WriteToPipe(ResultData& data);
+    template<typename T>
+    virtual DWORD ReadToPipe(T& data);
 
-    virtual DWORD ReadToPipe(ProgressData& data);
-    virtual DWORD ReadToPipe(InitialData& data);
-    virtual DWORD ReadToPipe(ResultData& data);
 
     virtual ~INamedPipeIPC() {
         CloseHandle(hPipe);
