@@ -38,7 +38,8 @@ void producer()
     std::cout << "producer : data processed" << std::endl;
 }
 
-
+//call_once 추가
+//barrier (callback 포함)
 
 
 int main()

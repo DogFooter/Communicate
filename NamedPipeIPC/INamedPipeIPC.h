@@ -12,7 +12,7 @@ class INamedPipeIPC
 {
 protected:
     HANDLE hPipe = INVALID_HANDLE_VALUE;
-
+    std::string pipeName;
 public:
 
     virtual int CreateNamedPipeDefault(std::string_view s) = 0;
