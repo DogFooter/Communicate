@@ -8,11 +8,13 @@
 #include <iostream>
 #include "commData.h"
 
+
 class INamedPipeIPC
 {
 protected:
     HANDLE hPipe = INVALID_HANDLE_VALUE;
-    std::string pipeName;
+    const char* pipePath = "\\\\.\\pipe\\;
+    std::string pipeName = "MyPipe";
 public:
 
     virtual int CreateNamedPipeDefault(std::string_view s) = 0;
@@ -24,7 +26,7 @@ public:
     template<typename T>
     virtual DWORD ReadToPipe(T& data);
 
-
+   
     virtual ~INamedPipeIPC() {
         CloseHandle(hPipe);
         std::cout << "Named Pipe cloesd" << std::endl;
