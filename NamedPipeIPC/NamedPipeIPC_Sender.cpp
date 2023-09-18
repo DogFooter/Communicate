@@ -1,8 +1,13 @@
 #include "NamedPipeIPC_Sender.h"
 
-int NamedPipeIPC_Sender::CreateNamedPipeDefault(std::string_view s) {
+int NamedPipeIPC_Sender::CreateNamedPipeDefault(std::string_view pname) {
+    if (pname.empty()) {
+        pname = pipeName;
+    }
+    auto str = (pipePath + pipeName);
+    std::wstring wstr(str.begin(), str.end());
 
-    hPipe = CreateNamedPipe(std::wstring(s.begin(), s.end()).data(), PIPE_ACCESS_DUPLEX,
+    hPipe = CreateNamedPipe(wstr.data(), PIPE_ACCESS_DUPLEX,
         PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
         1, sizeof(ProgressData), sizeof(ResultData),
         NMPWAIT_USE_DEFAULT_WAIT, NULL);

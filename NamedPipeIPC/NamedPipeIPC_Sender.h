@@ -13,7 +13,7 @@ class NamedPipeIPC_Sender final: public INamedPipeIPC {
 
 public:
 
-    int CreateNamedPipeDefault(std::string_view s = "\\\\.\\pipe\\MyPipe") override;
+    int CreateNamedPipeDefault(std::string_view s = "") override;
 
     int Connection() override;
 

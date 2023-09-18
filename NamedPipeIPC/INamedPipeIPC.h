@@ -13,7 +13,7 @@ class INamedPipeIPC
 {
 protected:
     HANDLE hPipe = INVALID_HANDLE_VALUE;
-    const char* pipePath = "\\\\.\\pipe\\;
+    constexpr std::string_view pipePath = "\\\\.\\pipe\\";
     std::string pipeName = "MyPipe";
 public:
 
