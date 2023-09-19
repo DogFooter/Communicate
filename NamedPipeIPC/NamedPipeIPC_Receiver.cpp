@@ -10,7 +10,7 @@ int NamedPipeIPC_Receiver::CreateNamedPipeDefault(std::string_view pipeName) {
 
     do {
         hPipe = CreateFile(wstr.data(), GENERIC_READ | GENERIC_WRITE,
-            0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);
+            0, NULL, OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, NULL);   
     } while (hPipe == INVALID_HANDLE_VALUE);
 
     return 0;
