@@ -4,14 +4,14 @@
 #include <mutex>
 #include <chrono>
 #include <condition_variable>
-//#include <boost/lockfree/queue.hpp>
+#include <boost/lockfree/queue.hpp>
 #include <queue>
 using namespace std::literals;
 
 std::mutex m;
 std::condition_variable cv;
 bool data_ready = false;
-//boost::lockfree::queue<int> shared_data;
+boost::lockfree::queue<int> shared_data;
 std::queue<int> shared_data;
 
 void consumer()
@@ -19,10 +19,10 @@ void consumer()
     while (1) {
         std::unique_lock<std::mutex> ul(m);
         cv.wait(ul, [] { return data_ready; });
-        if (shared_data.size() >= 10) {
-            shared_data.pop();
-            std::cout << "consume :" << shared_data.size() << std::endl;
-        }
+
+        shared_data.pop();
+        std::cout << "consume :" << shared_data.size() << std::endl;
+        
     }
 }
 void producer()
@@ -31,10 +31,10 @@ void producer()
 
         {
             std::lock_guard<std::mutex> lg(m);
-            if (shared_data.size() < 1000) {
-                shared_data.push(1);
-                std::cout << "producer " << shared_data.size() << std::endl;
-            }
+
+            shared_data.push(1);
+            std::cout << "producer " << shared_data.size() << std::endl;
+            
 
             data_ready = true;
         }
