@@ -13,9 +13,18 @@ std::condition_variable cv;
 bool data_ready = false;
 boost::lockfree::queue<int> shared_data;
 std::queue<int> shared_data;
+std::once_flag init_flag;
+
+void init(int a, double d)
+{
+    std::cout << "init" << std::endl;
+    std::this_thread::sleep_for(2s);
+}
 
 void consumer()
 {
+\
+
     while (1) {
         std::unique_lock<std::mutex> ul(m);
         cv.wait(ul, [] { return data_ready; });
@@ -27,6 +36,8 @@ void consumer()
 }
 void producer()
 {
+    std::call_once(init_flag, init, 10, 3.4); //somthig initialized
+
     while (1) {
 
         {
