@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include <boost/lockfree/queue.hpp>
 #include <queue>
+#include <barrier>
 using namespace std::literals;
 
 std::mutex m;
@@ -14,6 +15,12 @@ bool data_ready = false;
 boost::lockfree::queue<int> shared_data;
 std::queue<int> shared_data;
 std::once_flag init_flag;
+
+void complete() {
+    std::cout << " done" << std::endl;
+
+}
+std::barrier sync{ 3 ,complete };
 
 void init(int a, double d)
 {
@@ -31,7 +38,7 @@ void consumer()
 
         shared_data.pop();
         std::cout << "consume :" << shared_data.size() << std::endl;
-        
+        sync.arrive_and_wait(); // 한 스레드의 과다소비 방지
     }
 }
 void producer()
