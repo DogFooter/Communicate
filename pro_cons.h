@@ -12,11 +12,14 @@ using namespace std::literals;
 std::mutex m;
 std::condition_variable cv;
 bool data_ready = false;
-boost::lockfree::queue<int> shared_data;
-std::queue<int> shared_data;
+
+
+constexpr int max = 10000;
+boost::lockfree::queue<int> shared_data(max);
+//std::queue<int> shared_data;
 std::once_flag init_flag;
 
-void complete() {
+void complete() noexcept {
     std::cout << " done" << std::endl;
 
 }
@@ -28,17 +31,24 @@ void init(int a, double d)
     std::this_thread::sleep_for(2s);
 }
 
+struct PrintFunctor {
+    void operator()(int value) const {
+        std::cout << std::this_thread::get_id() << "Consumed value: " << value << std::endl;
+    }
+};
+
+
 void consumer()
 {
-\
+    int num;
 
     while (1) {
+        std::cout << std::this_thread::get_id() << std::endl;
         std::unique_lock<std::mutex> ul(m);
         cv.wait(ul, [] { return data_ready; });
 
-        shared_data.pop();
-        std::cout << "consume :" << shared_data.size() << std::endl;
-        sync.arrive_and_wait(); // 한 스레드의 과다소비 방지
+        shared_data.consume_one(PrintFunctor());
+        //sync.arrive_and_wait(); // 한 스레드의 과다소비 방지
     }
 }
 void producer()
@@ -50,9 +60,9 @@ void producer()
         {
             std::lock_guard<std::mutex> lg(m);
 
-            shared_data.push(1);
-            std::cout << "producer " << shared_data.size() << std::endl;
-            
+            shared_data.bounded_push(1);
+            std::cout << "produced " << std::endl;
+
 
             data_ready = true;
         }
