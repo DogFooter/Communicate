@@ -44,11 +44,12 @@ void consumer()
 
     while (1) {
         std::cout << std::this_thread::get_id() << std::endl;
-        std::unique_lock<std::mutex> ul(m);
+        {std::unique_lock<std::mutex> ul(m);
         cv.wait(ul, [] { return data_ready; });
 
         shared_data.consume_one(PrintFunctor());
-        //sync.arrive_and_wait(); // 한 스레드의 과다소비 방지
+        }
+        sync.arrive_and_wait(); // 한 스레드의 과다소비 방지
     }
 }
 void producer()
